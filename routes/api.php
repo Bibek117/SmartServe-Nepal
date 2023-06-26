@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::delete('/polls/{poll}',[PollController::class,'destroy']);
 Route::post('/polls',[PollController::class,'store']);
 Route::get('/all_polls',[PollController::class, 'fetchAllPolls']);
+Route::get('/verify_admin',[AuthController::class,'verifyAdmin']);
  });
 
 

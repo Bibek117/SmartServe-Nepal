@@ -53,6 +53,22 @@ class AuthController extends Controller
         ],204);
     }
 
+    //verify admin
+    public function verifyAdmin()
+    {
+        $user = Auth::user();
+        if ($user->type == 'admin') {
+            return response()->json([
+                'is_admin' => true,
+                '$user'=>$user,
+            ]);
+        } else {
+            return response()->json([
+                'is_admin' => false
+            ]);
+        }
+    }
+    
     // //forget password
     // public function forgetPassword(Request $request){
     //     $request->validate([
@@ -125,4 +141,8 @@ class AuthController extends Controller
     //         'message'=>'Password updated successfully'
     //     ]);
     // }
+
+
+
+
 }

@@ -3,15 +3,18 @@ const stateContext = createContext({
     user: null,
     token: null,
     toastMessage: null,
+    isAdmin: false,
     settingToastMessage: () => {},
     settingToken: () => {},
     settingUser: () => {},
+    settingIsAdmin: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
     const [user, setUser] = useState(JSON.parse(sessionStorage.getItem("user")));
     const [token, setToken] = useState(sessionStorage.getItem("access_token"));
     const [toastMessage, setToastMessage] = useState(localStorage.getItem("toastMessage"));
+      const [isAdmin, setIsAdmin] = useState(false);
     // const [token,setToken] = useState(null);
 
     const settingToastMessage = (message) => {
@@ -21,6 +24,9 @@ export const ContextProvider = ({ children }) => {
         } else {
             localStorage.removeItem("toastMessage");
         }
+    };
+    const settingIsAdmin = (isAdmin) => {
+        setIsAdmin(isAdmin);
     };
     const settingToken = (token) => {
         setToken(token);
@@ -54,6 +60,8 @@ export const ContextProvider = ({ children }) => {
                 settingUser,
                 token,
                 settingToken,
+                isAdmin,
+                settingIsAdmin
             }}
         >
             {children}
