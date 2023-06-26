@@ -1,59 +1,84 @@
-import { Outlet ,NavLink} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, NavLink, Navigate } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import adminProfileIamge from "../assets/admin_profile.webp";
-import { Navigate } from "react-router-dom";
+import PreLoader from "../components/Preloader";
 import axiosClient from "../axios-client";
-import "../styles/adminlayout.css"
+import "../styles/adminlayout.css";
 import {
     FaTachometerAlt,
     FaChartBar,
     FaUserCog,
     FaSignOutAlt,
 } from "react-icons/fa";
-import {FcSurvey} from "react-icons/fc";
-import {VscFeedback} from "react-icons/vsc";
-
+import { VscFeedback } from "react-icons/vsc";
 
 const AdminLayout = () => {
-    const { token, user,settingUser,settingToken } = useStateContext();
-    if (!token) {
-        return <Navigate to="/guest/login" />;
-    }
-    if(user && user.type !== "admin"){
-        return <Navigate to="/home" />;
-    }
-    
-   const handleLogout = (e) => {
-       e.preventDefault();
-       axiosClient.post("/logout").then(() => {
-           settingUser(null);
-           settingToken(null);
-       });
-   };
-   const sideBarLinks = [
-       {
-           id: 1,
-           name: "Dashboard",
-           icon: <FaTachometerAlt />,
-           link: "/admin/dashboard",
-       },
-       {
-           id: 2,
-           name: "Polls",
-           icon: <FaChartBar />,
-           link: "/admin/polls",
-       },
-       {
-           id: 3,
-           name: "Policy Feedbacks",
-           icon: <VscFeedback />,
-           link: "/admin/policy_feedbacks",
-       },
-   ];
+    const [initialLoad, setInitialLoad] = useState(true);
+    const { token, user, settingUser, settingToken , isAdmin , settingIsAdmin} = useStateContext();
+    const sideBarLinks = [
+        {
+            id: 1,
+            name: "Dashboard",
+            icon: <FaTachometerAlt />,
+            link: "/admin/dashboard",
+        },
+        {
+            id: 2,
+            name: "Polls",
+            icon: <FaChartBar />,
+            link: "/admin/polls",
+        },
+        {
+            id: 3,
+            name: "Policy Feedbacks",
+            icon: <VscFeedback />,
+            link: "/admin/policy_feedbacks",
+        },
+    ];
+ 
+     useEffect(() => {
+         axiosClient
+             .get("/verify_admin")
+             .then((response) => {
+                settingIsAdmin(response.data.is_admin);
+                //  console.log(response.data.is_admin);
+                //  console.log(response.data);
+             }) 
+             .catch((error) => {
+                //  console.log(error.response.data.message);
+                settingIsAdmin(false);
+             })
+             .finally(() => {
+                 setInitialLoad(false);
+             });
+;
+     }, []);
+       if (initialLoad) {
+           return <PreLoader text="Authenticating! please wait" />;
+       } else if (!token ) {
+           return <Navigate to="/guest/login" />;
+       } else if (user && user.type !== "admin" && !isAdmin) {
+           return <Navigate to="/home" />;
+       }
 
+   
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        axiosClient.post("/logout").then(() => {
+            settingUser(null);
+            settingToken(null);
+           settingIsAdmin(false);
+        });
+    };
 
     return (
         <>
+            {/* {initialLaoad ? ( 
+                <div className="loading">Loading...</div>
+                )
+            : (!initialLaoad && ( */}
             <div className="dashboard">
                 <div className="sidebar">
                     <h3>Admin Dashboard</h3>
@@ -61,17 +86,17 @@ const AdminLayout = () => {
                         {sideBarLinks.map((element) => {
                             return (
                                 <li key={element.id}>
-                                    <NavLink 
-                                    // key={element.id}
-                                    to={element.link}
-                                      className={({ isActive }) =>(
+                                    <NavLink
+                                        // key={element.id}
+                                        to={element.link}
+                                        className={({ isActive }) =>
                                             isActive ? "active_navlink" : ""
-                                      )}
+                                        }
                                     >
                                         {element.icon}
                                         {element.name}
                                     </NavLink>
-                               </li>
+                                </li>
                             );
                         })}
                     </ul>
@@ -85,22 +110,22 @@ const AdminLayout = () => {
                             />
                             <span>Bibek Angdembe</span>
                         </div>
-                         
-                         <div className="admin_handle">
+
+                        <div className="admin_handle">
                             <button href="#">
-                            <FaUserCog />
-                        </button>
-                        <button onClick={handleLogout}>
-                            <FaSignOutAlt /> 
-                        </button>
-                         </div>
-                        
+                                <FaUserCog />
+                            </button>
+                            <button onClick={handleLogout}>
+                                <FaSignOutAlt />
+                            </button>
+                        </div>
                     </div>
                     <div className="dashboard_main_content">
                         <Outlet />
                     </div>
                 </div>
             </div>
+            {/* ))} */}
         </>
     );
 };

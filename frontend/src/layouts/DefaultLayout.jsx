@@ -1,23 +1,22 @@
 import { Outlet ,Navigate,NavLink} from 'react-router-dom'
 import {useStateContext} from '../context/ContextProvider'
 import axiosClient from '../axios-client'
-import { useEffect } from 'react'
 import '../styles/defaultlayout.css'
 import {
     FaTachometerAlt,
     FaChartBar,
     FaSignOutAlt,
 } from "react-icons/fa";
-import { FcSurvey } from "react-icons/fc";
 import { VscFeedback } from "react-icons/vsc";
 import dummyProfile from "../assets/admin_profile.webp"
 
 const DefaultLayout = () => {
-const {user,settingUser,token,settingToken} = useStateContext();
+const {user,settingUser,token,settingToken , isAdmin} = useStateContext();
+const admin = false;
 if(!token){
   return <Navigate to="/guest/login" />
 }
-if(user && user.type === "admin"){
+if(user && user.type === "admin" && isAdmin){
   return <Navigate to="/admin/dashboard" />
 }
 
