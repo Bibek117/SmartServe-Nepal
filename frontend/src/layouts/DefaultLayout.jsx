@@ -11,8 +11,7 @@ import { VscFeedback } from "react-icons/vsc";
 import dummyProfile from "../assets/admin_profile.webp"
 
 const DefaultLayout = () => {
-const {user,settingUser,token,settingToken , isAdmin} = useStateContext();
-const admin = false;
+const {user,settingUser,token,settingToken , isAdmin,settingIsAdmin} = useStateContext();
 if(!token){
   return <Navigate to="/guest/login" />
 }
@@ -26,6 +25,7 @@ const handleLogout = (e) => {
   .then(() => {
     settingUser(null);
     settingToken(null);
+    settingIsAdmin(true);
 });
 }
   const sideBarLinks = [

@@ -14,8 +14,8 @@ import {
 import { VscFeedback } from "react-icons/vsc";
 
 const AdminLayout = () => {
-    const [initialLoad, setInitialLoad] = useState(true);
     const { token, user, settingUser, settingToken , isAdmin , settingIsAdmin} = useStateContext();
+    const [initialLoad, setInitialLoad] = useState(true);
     const sideBarLinks = [
         {
             id: 1,
@@ -36,49 +36,39 @@ const AdminLayout = () => {
             link: "/admin/policy_feedbacks",
         },
     ];
- 
-     useEffect(() => {
-         axiosClient
-             .get("/verify_admin")
-             .then((response) => {
-                settingIsAdmin(response.data.is_admin);
-                //  console.log(response.data.is_admin);
-                //  console.log(response.data);
-             }) 
-             .catch((error) => {
-                //  console.log(error.response.data.message);
-                settingIsAdmin(false);
-             })
-             .finally(() => {
-                 setInitialLoad(false);
-             });
-;
-     }, []);
-       if (initialLoad) {
-           return <PreLoader text="Authenticating! please wait" />;
-       } else if (!token ) {
-           return <Navigate to="/guest/login" />;
-       } else if (user && user.type !== "admin" && !isAdmin) {
-           return <Navigate to="/home" />;
-       }
+   useEffect(() => {
+       axiosClient
+           .get("/verify_admin")
+           .then((response) => {
+               settingIsAdmin(response.data.is_admin);
+           })
+           .catch((error) => {
+               settingIsAdmin(false); 
+           })
+           .finally(() => {
+               setInitialLoad(false);
+           });
+   }, []);
 
-   
+ if (initialLoad) {
+         return <PreLoader text="Authenticating! please wait" />;
+     } else if (!isAdmin || !token) {
+         return <Navigate to="/guest/login" />;
+     } else if (user && user.type !== "admin" && !isAdmin) {
+         return <Navigate to="/home" />;
+     }
 
     const handleLogout = (e) => {
         e.preventDefault();
         axiosClient.post("/logout").then(() => {
             settingUser(null);
             settingToken(null);
-           settingIsAdmin(false);
+           settingIsAdmin(true);
         });
     };
 
     return (
         <>
-            {/* {initialLaoad ? ( 
-                <div className="loading">Loading...</div>
-                )
-            : (!initialLaoad && ( */}
             <div className="dashboard">
                 <div className="sidebar">
                     <h3>Admin Dashboard</h3>
@@ -125,7 +115,6 @@ const AdminLayout = () => {
                     </div>
                 </div>
             </div>
-            {/* ))} */}
         </>
     );
 };
