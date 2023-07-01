@@ -22,6 +22,7 @@ axiosClient.interceptors.response.use((response)=>{
     try{
         if(error.response.status === 401){
             sessionStorage.removeItem('access_token');
+            sessionStorage.removeItem('user');
         }
     }catch(e){
         console.log(e);
