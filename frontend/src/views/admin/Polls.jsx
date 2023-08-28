@@ -4,14 +4,20 @@ import { v4 as uuid } from "uuid";
 import axiosClient from "../../axios-client";
 import PreLoader from "../../components/Preloader";
 import { FaRegTrashAlt, FaPlus, FaRegPaperPlane } from "react-icons/fa";
-import { handleError,handleSuccess,updateRemainingTimes } from "../../utils/globalFunctions";
+import {
+    handleError,
+    handleSuccess,
+    updateRemainingTimes,
+} from "../../utils/globalFunctions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {motion, AnimatePresence} from 'framer-motion'
+import { motion, AnimatePresence } from "framer-motion";
+
 
 const Polls = () => {
     const [allPolls, setAllPolls] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         question: "",
         description: "",
@@ -27,21 +33,20 @@ const Polls = () => {
     const handleCreateNewPoll = () => {
         setFormIsOpen(!formIsOpen);
     };
-      
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            try {
-                const response = await axiosClient.get("/all_polls");
-                setLoading(false);
-                const allPolls = response.data.data;
-                setAllPolls(allPolls);
-                updateRemainingTimes(setAllPolls);
-            } catch (error) {
-                setLoading(false);
-                console.log(error);
-            }
+                try {
+                    const response = await axiosClient.get("/all_polls");
+                    setLoading(false);
+                    const allPolls = response.data.data;
+                    setAllPolls(allPolls);
+                    updateRemainingTimes(setAllPolls);
+                } catch (error) {
+                    setLoading(false);
+                    console.log(error);
+                } 
         };
         fetchData();
 
@@ -50,7 +55,6 @@ const Polls = () => {
         //      updateRemainingTimes();
         //  }, 60000);
         //  return () => clearInterval(timer);
-
     }, [submitCount]);
 
     const handleSubmit = async (e) => {
@@ -62,24 +66,30 @@ const Polls = () => {
             end_date: end_date,
             poll_options: poll_options,
         };
-        try {
-            const response = await axiosClient.post("/polls", pollData);
-            // console.log(response.data.message);
-            handleSuccess("Poll created successfully and is live now");
-            setFormData({
-                question: "",
-                description: "",
-                end_date: "",
-                poll_options: [
-                    { poll_option_id: uuid(), option: "" },
-                    { poll_option_id: uuid(), option: "" },
-                ],
-            });
-            setSubmitCount(submitCount + 1);
-        } catch (error) {
-            handleError(error.response.data.message);
-            //console.log(error.response.data.message);
-        }
+        //console.log(pollData)
+         if (!submitting) {
+             setSubmitting(true);
+             try {
+                 const response = await axiosClient.post("/polls", pollData);
+                 // console.log(response.data.message);
+                 handleSuccess("Poll created successfully and is live now");
+                 setFormData({
+                     question: "",
+                     description: "",
+                     end_date: "",
+                     poll_options: [
+                         { poll_option_id: uuid(), option: "" },
+                         { poll_option_id: uuid(), option: "" },
+                     ],
+                 });
+                 setSubmitCount(submitCount + 1);
+             } catch (error) {
+                 handleError(error.response.data.message);
+                 //console.log(error.response.data.message);
+             } finally {
+                 setSubmitting(false);
+             }
+         }
     };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -141,27 +151,25 @@ const Polls = () => {
         }
     };
 
-
-    
     //framer_moiton
     const sectionVariants = {
-        initial : {
-            x : '200%',
-            opacity:0,
+        initial: {
+            x: "200%",
+            opacity: 0,
         },
-        animate:{
-            x : 0,
+        animate: {
+            x: 0,
             opacity: 1,
-            transition:{
+            transition: {
                 duration: 0.3,
-            }
+            },
         },
         exit: {
-            x: '200%',
+            x: "200%",
             opacity: 0,
-        }
+        },
     };
-    
+
     const activePolls = allPolls.filter((poll) => poll.status === "active");
     const expiredPolls = allPolls.filter((poll) => poll.status === "off");
 
@@ -246,6 +254,7 @@ const Polls = () => {
                                     {formData.poll_options.length > 2 && (
                                         <button
                                             className="remove_option_btn"
+                                            disabled = {submitting}
                                             onClick={(e) => {
                                                 handleRemoveOption(
                                                     e,
