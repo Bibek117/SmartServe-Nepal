@@ -35,7 +35,7 @@ const Login = () => {
                 settingToastMessage("Login Successfull");
             })
             .catch((error) => {
-               // console.log(error.response.data.errors);
+                console.log(error.response.data);
                 handleError(error.response.data.errors);
             });
     };

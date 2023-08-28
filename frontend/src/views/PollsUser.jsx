@@ -10,10 +10,13 @@ import "././../styles/userpoll.css";
 import PreLoader from "../components/Preloader";
 import { PieChart } from "../components/PieChart";
 import { GrPieChart } from "react-icons/gr";
+import { useStateContext } from "../context/ContextProvider";
+
 
 const PollsUser = () => {
     const [showChart, setShowChart] = useState(false);
     const [selectedChartIndex, setSelectedChartIndex] = useState(null);
+    const { user, toastMessage, settingToastMessage } = useStateContext();
 
     const [loading, setLoading] = useState(false);
 
@@ -38,6 +41,11 @@ const PollsUser = () => {
     };
 
     useEffect(() => {
+        
+             if (toastMessage !== null) {
+                 handleSuccess(toastMessage);
+                 settingToastMessage(localStorage.removeItem("toastMessage"));
+             }
         fetchData();
     }, []);
 

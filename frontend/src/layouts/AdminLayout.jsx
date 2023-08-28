@@ -29,12 +29,12 @@ const AdminLayout = () => {
             icon: <FaChartBar />,
             link: "/admin/polls",
         },
-        {
-            id: 3,
-            name: "Policy Feedbacks",
-            icon: <VscFeedback />,
-            link: "/admin/policy_feedbacks",
-        },
+        // {
+        //     id: 3,
+        //     name: "Policy Feedbacks",
+        //     icon: <VscFeedback />,
+        //     link: "/admin/policy_feedbacks",
+        // },
     ];
    useEffect(() => {
        axiosClient

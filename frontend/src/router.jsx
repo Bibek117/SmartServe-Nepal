@@ -24,67 +24,67 @@ import FeedbackUser from './views/FeedbackUser';
 
 const router = createBrowserRouter([
     {
-        path: '/',
-        element : <DefaultLayout />,
-        children : [
+        path: "/",
+        element: <DefaultLayout />,
+        children: [
             {
-                path : '/',
-                element : <Home />
+                path: "/",
+                element: <PollsUser />,
             },
             {
-                path : '/home',
-                element : <Navigate to="/" />
+                path: "/home",
+                element: <Navigate to="/" />,
             },
             {
-                path:'/polls',
-                element:<PollsUser/>
+                path: "/polls",
+                element: <PollsUser />,
             },
             {
-                path:'/feedbacks',
-                element: <FeedbackUser/>
-            }
-        ]
+                path: "/feedbacks",
+                element: <FeedbackUser />,
+            },
+        ],
     },
     {
-        path: '/guest',
-        element : <GuestLayout />,
-        children : [
+        path: "/guest",
+        element: <GuestLayout />,
+        children: [
             {
-                path : 'login',
-                element : <Login />
+                path: "login",
+                element: <Login />,
             },
             {
-                path : 'register',
-                element : <Register />
+                path: "register",
+                element: <Register />,
             },
             {
-                path:'/guest',
-                element:<Login/>
-            }   
-        ]
+                path: "/guest",
+                element: <Login />,
+            },
+        ],
     },
     {
-        path : '/admin',
-        element : <AdminLayout />,
-        children : [
+        path: "/admin",
+        element: <AdminLayout />,
+        children: [
             {
-                path : 'dashboard',
-                element : <Dashboard />
+                path: "dashboard",
+                element: <Dashboard />,
             },
             {
-                path : 'polls',
-                element : <Polls />
+                path: "polls",
+                element: <Polls />,
             },
             {
-                path : 'policy_feedbacks',
-                element : <PolicyFeedback />
-            }
-        ]
+                path: "policy_feedbacks",
+                element: <PolicyFeedback />,
+            },
+        ],
     },
     {
-        path : '*',
-        element : <Page404 />   
-    }
+        path: "*",
+        element: <Page404 />,
+    },
 ]);
 
 export default router; 

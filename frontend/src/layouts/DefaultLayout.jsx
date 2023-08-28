@@ -29,24 +29,24 @@ const handleLogout = (e) => {
 });
 }
   const sideBarLinks = [
-      {
-          id: 1,
-          name: "Dashboard",
-          icon: <FaTachometerAlt />,
-          link: "/",
-      },
+    //   {
+    //       id: 1,
+    //       name: "Dashboard",
+    //       icon: <FaTachometerAlt />,
+    //       link: "/",
+    //   },
       {
           id: 2,
           name: "Polls",
           icon: <FaChartBar />,
           link: "/polls",
       },
-      {
-          id: 3,
-          name: "Policy Feedbacks",
-          icon: <VscFeedback />,
-          link: "/feedbacks",
-      },
+    //   {
+    //       id: 3,
+    //       name: "Policy Feedbacks",
+    //       icon: <VscFeedback />,
+    //       link: "/feedbacks",
+    //   },
   ];
 
 

@@ -232,4 +232,19 @@ class PollController extends Controller
             'data' => $polls_with_votes_percentage
         ]);
     }
+
+    //admin dashboard data 
+    public function adminDashboard(){
+        $totalActivePolls = Poll::where('status', 'active')->count();
+        $totalInactivePolls = Poll::where('status', 'off')->count();
+        $totalPolls = Poll::count();
+        $totalUsers = User::where('type','user')->count();
+
+        return [
+            'totalActivePolls' => $totalActivePolls,
+            'totalInactivePolls' => $totalInactivePolls,
+            'totalPolls' => $totalPolls,
+            'totalUsers' => $totalUsers,
+        ];
+    }
 }
